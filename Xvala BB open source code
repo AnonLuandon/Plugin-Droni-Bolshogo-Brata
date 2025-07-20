@@ -1,0 +1,78 @@
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
+
+import static org.bukkit.entity.EntityType.CHICKEN;
+
+public class Events implements Listener {
+    private Plugin plugin;
+    private Plugin pluginInstance;
+
+    public Events(Plugin plugin, Plugin pluginInstance) {
+        this.plugin = plugin;
+        this.pluginInstance = pluginInstance;
+    }
+
+
+    @EventHandler
+    public void onIHateGovrement (AsyncPlayerChatEvent event){
+        Player player = event.getPlayer();
+        String message = event.getMessage();
+
+        if (message.equalsIgnoreCase("Я ненавижу правительство")){
+            player.sendMessage("СОСИ ДЖЕНТЕЛЬМЕН");
+
+            Bukkit.getScheduler().runTask(pluginInstance, () -> {
+
+            Location loca = player.getLocation();
+            Chicken chicken1 = (Chicken) loca.getWorld().spawnEntity(loca, CHICKEN);
+            chicken1.setCustomName("ХВАЛА ББ");
+            chicken1.setCustomNameVisible(true);
+            Chicken chicken2 = (Chicken) player.getWorld().spawnEntity(loca.clone().add(1, 0, 0), EntityType.CHICKEN);
+            chicken2.setCustomName("ЛЮБИ ПРАВИТЕЛЬСТВО");
+            chicken2.setCustomNameVisible(true);
+            Chicken chicken3 = (Chicken) player.getWorld().spawnEntity(loca.clone().add(0, 0, -1 ), CHICKEN);
+            chicken3.setCustomName("БИБКИ");
+            chicken3.setCustomNameVisible(true);
+            Chicken chicken4 = (Chicken) player.getWorld().spawnEntity(loca.clone().add(0,0,1), CHICKEN);
+            chicken4.setCustomName("ХВАЛА АНОНУ");
+            chicken4.setCustomNameVisible(true);
+            Chicken chicken5 = (Chicken) player.getWorld().spawnEntity(loca.clone().add(-1,0,0), CHICKEN);
+            chicken5.setCustomName("СМЕРТЬ ДЖЕНТЕЛЬМЕНАМ");
+            chicken5.setCustomNameVisible(true);
+
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    chicken1.getWorld().createExplosion(chicken1.getLocation(), 4F, false, false);
+                    chicken1.remove();
+                    chicken2.getWorld().createExplosion(chicken2.getLocation(), 4F,false,false);
+                    chicken2.remove();
+                    chicken3.getWorld().createExplosion(chicken3.getLocation(), 4F, false, false);
+                    chicken3.remove();
+                    chicken4.getWorld().createExplosion(chicken4.getLocation(), 4F,false,false);
+                    chicken4.remove();
+                    chicken5.getWorld().createExplosion(chicken5.getLocation(), 4F,false,false);
+                    chicken5.remove();
+
+
+                }
+            }.runTaskLater(plugin, 60L);
+            });
+            event.setCancelled(true);
+        }
+    }
+}
+
+//это в главном классе
+Bukkit.getPluginManager().registerEvents(new Events (this, this), this);
